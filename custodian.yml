@@ -1,0 +1,20 @@
+policies:
+  - name: ec2-security-group-open-ports-check
+    resource: ec2
+    description: |
+      Notify if an EC2 instance has a security group with too many open ports.
+    filters:
+      - type: security-group
+        key: "length(IpPermissions)"
+        value: 2
+        op: gte
+    actions:
+      - type: notify
+        template: default.html
+        priority_header: "2"
+        subject: "EC2 Instance with Too Many Open Ports Detected"
+        to:
+          - "gurusravani.info@gmail.com"
+        transport:
+          type: sqs
+          queue: "https://sqs.us-west-2.amazonaws.com/123456789012/my-notification-queue"
